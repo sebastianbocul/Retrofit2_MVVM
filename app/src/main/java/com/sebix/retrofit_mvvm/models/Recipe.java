@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.Arrays;
 
-class Recipe implements Parcelable {
+public class Recipe implements Parcelable {
     private String title;
     private String publisher;
     private String[] ingredients;
