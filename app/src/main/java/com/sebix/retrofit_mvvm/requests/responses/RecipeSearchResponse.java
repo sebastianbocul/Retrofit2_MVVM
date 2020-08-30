@@ -6,7 +6,7 @@ import com.sebix.retrofit_mvvm.models.Recipe;
 
 import java.util.List;
 
-class RecipeSearchResponse {
+public class RecipeSearchResponse {
 
     @SerializedName("count")
     @Expose()
