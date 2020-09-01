@@ -1,6 +1,8 @@
 package com.sebix.retrofit_mvvm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import com.sebix.retrofit_mvvm.requests.RecipeApi;
 import com.sebix.retrofit_mvvm.requests.ServiceGenerator;
 import com.sebix.retrofit_mvvm.requests.responses.RecipeSearchResponse;
 import com.sebix.retrofit_mvvm.util.Constants;
+import com.sebix.retrofit_mvvm.viewmodels.RecipesListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +24,16 @@ import retrofit2.Response;
 
 public class RecipeListActivity extends BaseActivity {
     private static final String TAG = "RecipeListActivity";
-
+    private RecipesListViewModel mRecipesListViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mRecipesListViewModel = new ViewModelProvider(this).get(RecipesListViewModel.class);
+
+
+        subscribeObservers();
 
         findViewById(R.id.show_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +47,15 @@ public class RecipeListActivity extends BaseActivity {
             }
         });
     }
+
+    private void subscribeObservers(){
+        mRecipesListViewModel.getmRecipes().observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(List<Recipe> recipes) {
+            }
+        });
+    }
+
 
     private void testRetrofitRequest(){
         RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
