@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.sebix.retrofit_mvvm.models.Recipe;
+import com.sebix.retrofit_mvvm.requests.RecipeApiClient;
 
 import java.util.List;
 
 public class RecipeRepository {
     private static RecipeRepository instance;
-    private MutableLiveData<List<Recipe>> mRecipes;
+    private RecipeApiClient mRecipeApiClient;
 
     public static RecipeRepository getInstance() {
         if (instance == null) {
@@ -19,13 +20,13 @@ public class RecipeRepository {
     }
 
     public RecipeRepository(MutableLiveData<List<Recipe>> mRecipes) {
-        this.mRecipes = mRecipes;
+        mRecipeApiClient = RecipeApiClient.getInstance();
     }
 
     public RecipeRepository() {
     }
 
-    public LiveData<List<Recipe>> getRecipes(){
-        return mRecipes;
+    public LiveData<List<Recipe>> getRecipes() {
+        return mRecipeApiClient.getRecipes();
     }
 }

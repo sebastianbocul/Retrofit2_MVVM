@@ -59,37 +59,39 @@ public class RecipeListActivity extends BaseActivity {
 
     private void testRetrofitRequest(){
         RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
-        Call<RecipeSearchResponse> responseCall = recipeApi.searchRecipe(
-                Constants.API_KEY,
-                "chicken breast",
-                "1"
-                );
 
-        responseCall.enqueue(new Callback<RecipeSearchResponse>() {
-            @Override
-            public void onResponse(Call<RecipeSearchResponse> call, Response<RecipeSearchResponse> response) {
-                Log.d(TAG, "onResponse: " + response.toString());
-                if(response.code()==200){
-                    Log.d(TAG, "onResponse: " + response.body().toString());
-                    List<Recipe> recipes = new ArrayList<>(response.body().getRecipes());
-                    for(Recipe r:recipes){
-                        Log.d(TAG, "items from list:" + r.getTitle());
-                    }
-                }else {
-                    try {
-                        Log.d(TAG, "onResponse: " + response.errorBody().string());
-                    }catch (Exception e){
-                        e.getStackTrace();
-                    }
-                }
 
-            }
-
-            @Override
-            public void onFailure(Call<RecipeSearchResponse> call, Throwable t) {
-                Log.d(TAG, "onfailure");
-
-            }
-        });
+//        Call<RecipeSearchResponse> responseCall = recipeApi.searchRecipe(
+//                Constants.API_KEY,
+//                "chicken breast",
+//                "1"
+//                );
+//
+//        responseCall.enqueue(new Callback<RecipeSearchResponse>() {
+//            @Override
+//            public void onResponse(Call<RecipeSearchResponse> call, Response<RecipeSearchResponse> response) {
+//                Log.d(TAG, "onResponse: " + response.toString());
+//                if(response.code()==200){
+//                    Log.d(TAG, "onResponse: " + response.body().toString());
+//                    List<Recipe> recipes = new ArrayList<>(response.body().getRecipes());
+//                    for(Recipe r:recipes){
+//                        Log.d(TAG, "items from list:" + r.getTitle());
+//                    }
+//                }else {
+//                    try {
+//                        Log.d(TAG, "onResponse: " + response.errorBody().string());
+//                    }catch (Exception e){
+//                        e.getStackTrace();
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RecipeSearchResponse> call, Throwable t) {
+//                Log.d(TAG, "onfailure");
+//
+//            }
+//        });
     }
 }
