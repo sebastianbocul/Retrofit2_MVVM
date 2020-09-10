@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-seurity-config>
+    <domain-config cleartextTraffic="true">
+        <domain includeSubdomains="true">recipesapi.herokuapp.com</domain>
+    </domain-config>
+</network-seurity-config>
