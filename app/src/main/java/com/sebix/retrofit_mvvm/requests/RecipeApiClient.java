@@ -24,7 +24,7 @@ import static com.sebix.retrofit_mvvm.util.Constants.NETWORK_TIMEOUT;
 public class RecipeApiClient {
     private static final String TAG = "RecipeApiClient";
     private static RecipeApiClient instance;
-    private MutableLiveData<List<Recipe>> mRecipes;
+    private MutableLiveData<List<Recipe>> mRecipes = new MutableLiveData<>();
     private RetrieveRecipesRunnable mRetrieveRecipesRunnable;
 
     public static RecipeApiClient getInstance() {
@@ -38,14 +38,15 @@ public class RecipeApiClient {
     }
 
     public LiveData<List<Recipe>> getRecipes() {
+        searchRecipesApi("chicken",1);
         return mRecipes;
     }
 
-    public void searchRecipesApi(String query,int pageNumber) {
-        if(mRetrieveRecipesRunnable!=null){
-            mRetrieveRecipesRunnable=null;
+    public void searchRecipesApi(String query, int pageNumber) {
+        if (mRetrieveRecipesRunnable != null) {
+            mRetrieveRecipesRunnable = null;
         }
-        mRetrieveRecipesRunnable=new RetrieveRecipesRunnable(query,pageNumber);
+        mRetrieveRecipesRunnable = new RetrieveRecipesRunnable(query, pageNumber);
         final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipesRunnable);
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
@@ -70,25 +71,32 @@ public class RecipeApiClient {
         @Override
         public void run() {
             try {
+                Log.d("runLog", "run: ");
                 Response response = getRecipes(query, pageNumber).execute();
                 if (cancelRequest) {
+                    Log.d("runLog", "cancelRequest: ");
                     return;
                 }
                 if (response.code() == 200) {
+                    Log.d("runLog", "ifCode =200: ");
                     List<Recipe> list = new ArrayList<>(((RecipeSearchResponse) response.body()).getRecipes());
                     if (pageNumber == 1) {
+                        Log.d("runLog", "ifpage==1: ");
                         mRecipes.postValue(list);
                     } else {
+                        Log.d("runLog", "ifpage else: ");
                         List<Recipe> currentRecipes = mRecipes.getValue();
                         currentRecipes.addAll(list);
                         mRecipes.postValue(currentRecipes);
                     }
                 } else {
+                    Log.d("runLog", "ifcode else: ");
                     String error = response.errorBody().string();
                     Log.e(TAG, "run error: " + error);
                     mRecipes.postValue(null);
                 }
             } catch (IOException e) {
+                Log.d("runLog", "catch except: ");
                 e.printStackTrace();
                 mRecipes.postValue(null);
             }

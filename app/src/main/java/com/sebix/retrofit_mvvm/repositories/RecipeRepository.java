@@ -14,8 +14,7 @@ public class RecipeRepository {
 
     public static RecipeRepository getInstance() {
         if (instance == null) {
-            instance = new RecipeRepository();
-        }
+            instance = new RecipeRepository(); }
         return instance;
     }
 
@@ -24,6 +23,7 @@ public class RecipeRepository {
     }
 
     public RecipeRepository() {
+        mRecipeApiClient = RecipeApiClient.getInstance();
     }
 
     public LiveData<List<Recipe>> getRecipes() {
