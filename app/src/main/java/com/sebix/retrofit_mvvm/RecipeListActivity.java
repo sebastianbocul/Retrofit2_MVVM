@@ -3,6 +3,7 @@ package com.sebix.retrofit_mvvm;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,18 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sebix.retrofit_mvvm.adapters.OnRecipeListener;
 import com.sebix.retrofit_mvvm.adapters.RecipeRecyclerAdapter;
 import com.sebix.retrofit_mvvm.models.Recipe;
-import com.sebix.retrofit_mvvm.requests.RecipeApi;
-import com.sebix.retrofit_mvvm.requests.ServiceGenerator;
-import com.sebix.retrofit_mvvm.requests.responses.RecipeSearchResponse;
-import com.sebix.retrofit_mvvm.util.Constants;
 import com.sebix.retrofit_mvvm.viewmodels.RecipesListViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RecipeListActivity extends BaseActivity implements OnRecipeListener {
     private static final String TAG = "RecipeListActivity";
@@ -33,12 +25,11 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_recipe_list);
         mRecipesListViewModel = new ViewModelProvider(this).get(RecipesListViewModel.class);
-
         mRecyclerView = findViewById(R.id.list_recycler_view);
         initRecyclerView();
-        testRetrofitRequest();
+        initSearchView();
         subscribeObservers();
     }
 
@@ -61,35 +52,18 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void testRetrofitRequest() {
-        RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
-        Call<RecipeSearchResponse> responseCall = recipeApi.searchRecipe(
-                Constants.API_KEY,
-                "chicken breast",
-                "1"
-        );
-        responseCall.enqueue(new Callback<RecipeSearchResponse>() {
+    private void initSearchView() {
+        final SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onResponse(Call<RecipeSearchResponse> call, Response<RecipeSearchResponse> response) {
-                Log.d(TAG, "onResponse: " + response.toString());
-                if (response.code() == 200) {
-                    Log.d(TAG, "onResponse: " + response.body().toString());
-                    List<Recipe> recipes = new ArrayList<>(response.body().getRecipes());
-                    for (Recipe r : recipes) {
-                        Log.d(TAG, "items from list:" + r.getTitle());
-                    }
-                } else {
-                    try {
-                        Log.d(TAG, "onResponse: " + response.errorBody().string());
-                    } catch (Exception e) {
-                        e.getStackTrace();
-                    }
-                }
+            public boolean onQueryTextSubmit(String query) {
+                mRecipesListViewModel.searchRecipesApi(query, 1);
+                return false;
             }
 
             @Override
-            public void onFailure(Call<RecipeSearchResponse> call, Throwable t) {
-                Log.d(TAG, "onfailure");
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
     }
