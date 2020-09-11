@@ -1,6 +1,5 @@
 package com.sebix.retrofit_mvvm.adapters;
 
-import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,8 +73,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemViewType(int position) {
         if (mRecipes.get(position).getSocial_rank() == -1) {
             return CATEGORY_TYPE;
-        }
-        if (mRecipes.get(position).getTitle().equals("LOADING...")) {
+        } else if (mRecipes.get(position).getTitle().equals("LOADING...")) {
+            return LOADING_TYPE;
+        } else if (position==mRecipes.size()-1 && position!=0 && !mRecipes.get(position).getTitle().equals("EXHAUSTED")) {
             return LOADING_TYPE;
         } else {
             return RECIPE_TYPE;
@@ -93,16 +93,16 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    public void displaySearchCategories(){
+    public void displaySearchCategories() {
         List<Recipe> categories = new ArrayList<>();
-        for(int i=0;i< Constants.DEFAULT_SEARCH_CATEGORIES.length;i++){
+        for (int i = 0; i < Constants.DEFAULT_SEARCH_CATEGORIES.length; i++) {
             Recipe recipe = new Recipe();
             recipe.setTitle(Constants.DEFAULT_SEARCH_CATEGORIES[i]);
             recipe.setImage_url(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
             recipe.setSocial_rank(-1);
             categories.add(recipe);
         }
-        mRecipes=categories;
+        mRecipes = categories;
         notifyDataSetChanged();
     }
 
