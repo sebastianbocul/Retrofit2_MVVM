@@ -29,6 +29,11 @@ public class RecipeRepository {
         mRecipeApiClient = RecipeApiClient.getInstance();
     }
 
+    public MutableLiveData<Boolean> isRecipeRequestTimedout() {
+        return mRecipeApiClient.isRecipeRequestTimedout();
+    }
+
+
     public LiveData<List<Recipe>> getRecipes() {
         return mRecipeApiClient.getRecipes();
     }

@@ -18,6 +18,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.sebix.retrofit_mvvm.models.Recipe;
 import com.sebix.retrofit_mvvm.viewmodels.RecipeViewModel;
 
+import org.w3c.dom.Text;
+
 public class RecipeActivity extends BaseActivity {
     private static final String TAG = "RecipeActivity";
     private AppCompatImageView mRecipeImage;
@@ -56,7 +58,19 @@ public class RecipeActivity extends BaseActivity {
                 if (recipe != null) {
                     if (recipe.getRecipe_id() == mRecipeViewModel.getmRecipeId()) {
                         setRecipeProporties(recipe);
+                        mRecipeViewModel.setDidRetrieveRecipe(true);
                     }
+                }
+            }
+        });
+
+        mRecipeViewModel.isRecipeRequestTimedout().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    mRecipeViewModel.setDidRetrieveRecipe(false);
+                    displayErrorScreen("Error loading data. Check network connection");
+                    Log.d(TAG, "onChanged: loading error ");
                 }
             }
         });
@@ -77,6 +91,24 @@ public class RecipeActivity extends BaseActivity {
                 mRecipeIngredientsContainer.addView(textView);
             }
         }
+        showProgressBar(false);
+        showParent();
+    }
+
+    private void displayErrorScreen(String errorMessage){
+        mRecipeTitle.setText("Error retrieving recipe");
+        mRecipeRank.setText("");
+        TextView textView = new TextView(this);
+        if(!errorMessage.equals("")){
+            textView.setText(errorMessage);
+        }else {
+            textView.setText("Error");
+        }
+        textView.setTextSize(15);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mRecipeIngredientsContainer.addView(textView);
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.white_background);
+        Glide.with(getApplicationContext()).setDefaultRequestOptions(requestOptions).load(R.drawable.white_background).into(mRecipeImage);
         showProgressBar(false);
         showParent();
     }
