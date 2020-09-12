@@ -1,5 +1,6 @@
 package com.sebix.retrofit_mvvm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -91,6 +92,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
     @Override
     public void onRecipeClick(int position) {
+        Intent intent = new Intent(this,RecipeActivity.class);
+        intent.putExtra("recipe",mRecipeRecyclerAdapter.getSelectedRecipe(position));
+        startActivity(intent);
     }
 
     @Override
